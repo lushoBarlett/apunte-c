@@ -1,0 +1,851 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\setlength\parindent{0cm}
+
+\newcommand{\cscanf}[0]{\lstinline{scanf}}
+\newcommand{\cprintf}[0]{\lstinline{printf}}
+\newcommand{\cmain}[0]{\lstinline{main}}
+\newcommand{\cif}[0]{\lstinline{if}}
+\newcommand{\celse}[0]{\lstinline{else}}
+\newcommand{\cwhile}[0]{\lstinline{while}}
+\newcommand{\cfor}[0]{\lstinline{for}}
+
+\begin{document}
+
+\title{Introducción a C y algoritmos}
+\author{Luciano Barletta \& Sebastián Mestre}
+\maketitle
+\date
+\newpage
+
+\lstset{language=C,
+        basicstyle=\small,
+        keywordstyle=\bfseries\color{blue},
+	commentstyle=\color{gray},
+        stringstyle=\ttfamily,
+        showstringspaces=false}
+
+\section{Variables}
+
+Una variable representa un pedazo de memoria ubicado en algún lugar, en este lugar podemos almacenar un valor. La propiedad más importante de las variables es que este valor puede ser modificado. En nuestro código nos referimos a las variables y al valor que contienen por su nombre, también conocido como \textbf{identificador}.
+
+\bigskip
+
+En C, y en muchos lenguajes, los identificadores siguen reglas. Notablemente, no pueden ser palabras reservadas, ya que en el lenguaje tienen un significado especial, no pueden contener muchos de los símbolos, excepto por ejemplo '\_', ni empezar con números.
+
+\bigskip
+
+Cada variable puede contener un único \textbf{tipo} de valor. C viene equipado con algunos tipos llamados \textbf{nativos}. Estos últimos no nos limitan, pero son los que usaremos para los ejemplos. Algunos de estos tipos son el entero, el decimal, el caracter, etc\footnote{La lista de tipos de C se encuentra en este \href{http://www.it.uc3m.es/pbasanta/asng/course_notes/data_types_es.html}{\textcolor{cyan}{\underline{link}}}.}. Una vez que este tipo está establecido para una variable, nunca podrá ser otro. No podremos modificar el tipo de una variable, pero sí su valor, mientras sea del mismo tipo.
+
+\bigskip
+
+Cuando especificamos el \textbf{tipo} y el nombre de una nueva variable la estamos \textbf{declarando}. Esto indica que a partir de este punto, existe un nuevo pedazo de memoria que podemos usar y tendrá el nombre de la variable. Además, su tipo nos asegura qué cosas contendrá. Darle un valor inicial no es necesario, pero si lo hacemos, además la estamos \textbf{inicializando}. Si no inicializamos una variable contendrá un valor extraño que existía en la memoria previamente y lo llamaremos \textbf{basura}. Siempre que escribamos el nombre de una variable en nuestro código, representará su valor. Esto es excepto cuando las estamos declarando o cambiando su valor.
+
+\begin{lstlisting}
+                // x no existe | y no existe
+int x = 5;      // x: 5        | y no existe
+int y;          // x: 5        | y: ??? (basura)
+y = x + 1;      // x: 5        | y: 6
+x = 0;          // x: 0        | y: 6
+
+\end{lstlisting}
+
+En este ejemplo declaramos una variable llamada \textit{x} que contendrá un entero, el número 5. Luego declaramos una variable \textit{y}, pero no la inicializamos. Finalmente cambiamos el valor de \textit{y} y de \textit{x}, en ese orden. En el costado hay comentarios sobre qué contienen las variables luego de ejecutar la linea correspondiente. Notar el uso del valor contenido en \textit{x} para asignar un valor a \textit{y}.
+
+\bigskip
+
+\textbf{Importante}: usar una variable antes de que exista producirá un error. Usarla antes de que sea inicializada no producirá un error, pero no obtendremos el resultado esperado. Declarar una variable con un nombre que ya existe también es un error.
+
+\bigskip
+
+Observemos que al escribir un tipo seguido de un nombre, estamos declarando una variable de ese tipo con ese nombre. Para asignar valores a esa variable escribimos su nombre, seguido de un símbolo igual, seguido de algún valor que se corresponda con el tipo de la variable a la que queremos asignar. Este valor es alguna expresión matemática, que puede involucrar variables, como se vió en el ejemplo.
+
+\bigskip
+
+Volveremos sobre el tópico de variables luego, ya que son fundamentales para realizar cómputos. Pero primero hagamos un programa que sea capaz de correr.
+
+\section{Primer programa}
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	printf("Hola Mundo\n");
+	return 0;
+}
+\end{lstlisting}
+
+Arriba vemos un programa válido en C, cuyo único propósito es imprimir "Hola Mundo!". Ahora resta saber qué es todo lo que está ocurriendo aquí. No preocuparse por entender a la perfección cada detalle, volveremos sobre estos conceptos más adelante, cuando los aprovechemos para hacer programas más avanzados.
+
+\bigskip
+
+En la primer línea tenemos una \textbf{directiva}. Este concepto no nos interesa de por sí, lo importante es que con la directiva \lstinline{\#include} podemos, como el nombre sugiere, incluir funcionalidad en nuestro programa. Sin esta inclusión de la \textbf{biblioteca} \lstinline{stdio.h} no podríamos haber usado la funcionalidad de \cprintf\ para imprimir, más adelante. Como esta funcionalidad, hay muchas.
+
+\bigskip
+
+Luego aparece el punto de entrada del programa, \cmain. Esta es una \textbf{función}, algo que también veremos más adelante y por lo tanto sus detalles serán omitidos. Todo lo que nos interesa por ahora es que lleva un tipo entero, su nombre, paréntesis, llaves, y al final y antes de que cierren las llaves retorna el entero 0 por medio de \lstinline{return}. Elegimos 0 porque históricamente significa que el programa se ejecutó con éxito, pero podríamos usar cualquier entero.
+
+\bigskip
+
+Finalmente explicaremos \cprintf. Esta también es una función, al igual que \cmain, pero a esta la estamos llamando. Nuevamente, esto se entenderá mejor más adelante. Nos interesa que para llamar \cprintf\ abrimos paréntesis, como los de \cmain, y le introducimos algún texto entre comillas dobles, este texto puede ser cualquiera. Al final agregamos \lstinline{\n} que significa insertar una nueva linea, o tocar la tecla \textit{enter}.
+
+\section{Entrada}
+
+Vamos a complejizar nuestro primer programa. Añadiremos interacción con el usuario, en la forma de ingreso de datos. En este ejemplo ingresaremos un entero por consola y se lo devolvemos al usuario.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int a;
+
+	printf("Ingrese un numero\n");
+	scanf("%d", &a);
+	printf("Se ha ingresado %d", a);
+
+	return 0;
+}
+\end{lstlisting}
+
+Este nuevo programa nos mostrará un texto pidiéndonos un número. Luego se quedará esperando a que lo escribamos y toquemos la tecla \textit{enter}. Finalmente nos mostrará el número que ingresamos. 
+
+\bigskip
+
+Ya entendemos la mayoría de lo que significa este código. Las nuevas adiciones son la variable \textit{a}, la función \cscanf\ y la simbología especial que utiliza los caracteres \& y \%.
+
+\bigskip
+
+Primero declaramos, pero no inicializamos, la variable \textit{a}. Iniciarla o no, no es importante, ya que no será nuestra tarea asignarle un valor. Ese trabajo se lo dejaremos a la nueva función que estamos utilizando.
+
+\bigskip
+
+La función \cscanf\ viene incluida en \lstinline{stdio.h} y será la encargada de asignarle a la variable \textit{a} el valor que lea de la consola. Primero deberemos decirle qué queremos leer. La forma en que hacemos esto es encerrando entre comillas dobles una simbología especial que consiste en un caracter \% seguido de un comando\footnote{La lista completa de estos comandos se encuentra en este \href{http://agora.pucp.edu.pe/inf2170681/3.htm}{\textcolor{cyan}{\underline{link}}}.}. En este caso usamos la letra \textit{d}, que significa que queremos leer un entero. Luego escribimos una coma y decimos que queremos guardar el valor en la variable \textit{a}, pero escribimos \&\textit{a}. La razón es simple, escribir solamente \textit{a} representaría una lectura del valor de \textit{a}, y nada más. C nos provee el operador \& para representar no el valor, sino la \textbf{ubicación} de la variable, y \cscanf\ utiliza esta ubicación para guardar el valor.
+
+\bigskip
+
+Lo último para mencionar es un uso diferente de la función \cprintf. Su nuevo uso es similar al visto anteriormente, pero agregamos el mismo comando que en \cscanf, esto se usa para imprimir un entero en el lugar exacto donde hayamos escrito el comando. Se imprimirá aquel entero que especifiquemos luego de la coma, en este caso \textit{a}. Observar además que usamos \textit{a} y no \&\textit{a}, ya que esta vez sí queremos el valor de \textit{a}.
+
+\bigskip
+
+\textbf{Importante}: es un error común olvidarse el \& en \cscanf, o agregarlo en \cprintf. El primer caso producirá un error, pero el segundo sólo nos dará un resultado no esperado.
+
+\section{Condicionales}
+
+Vamos a aumentar la capacidad de nuestro programa anterior, agregando un concepto que nos permitirá tomar decisiones. Los condicionales son bloques de código que se ejecutarán dada una condición que evalúa a \textit{verdadero} o \textit{falso}, que solemos llamar \textbf{predicado}.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int a;
+
+	printf("Ingrese el numero 5\n");
+	scanf("%d", &a);
+	if (a == 5) {
+		printf("El numero es correcto\n");
+	}
+
+	return 0;
+}
+\end{lstlisting}
+
+En nuestro nuevo ejemplo usamos \cif, un predicado entre paréntesis, y entre llaves el código a ejecutar si el predicado es verdadero. Un predicado es verdadero siempre que el valor que este represente sea distinto de 0. Un predicado será falso siempre que evalúe a 0. En C existen operadores de comparación como en matemática para verificar igualdad, desigualdad, menor, mayor, etc\footnote{La tabla con los todos operadores de C se encuentra en este \href{http://lsi.vc.ehu.es/pablogn/docencia/FdI/FdIc/labs/a1/htm/oper.html}{\textcolor{cyan}{\underline{link}}}.}. Estos operadores retornarán 1 si son verdaderos y 0 si son falsos. Nótese que técnicamente podríamos escribir cualquier cosa dentro del \cif\ que retorne algún valor, por ejemplo podríamos poner simplemente la variable \textit{a}, y esto tendrá el efecto verificar que tenga cualquier valor distinto de 0.
+
+\textbf{Importante}: no confundir '==' con '=', técnicamente el operador de asignación retorna un valor y estos errores son difíciles de encontrar.
+
+\bigskip
+
+Al ejecutarse el programa, pueden pasar dos cosas. Si ingresamos 5, el número pedido, se nos retornará un mensaje. En cambio si no ingresamos 5, nada más ocurrirá. Esto no nos alcanza, queremos una forma de hacer algo en este último caso. Veamos qué podemos hacer.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int a;
+
+	printf("Ingrese el numero 5\n");
+	scanf("%d", &a);
+	if (a == 5) {
+		printf("El numero es correcto\n");
+	}
+	printf("El numero no es correcto\n");
+
+	return 0;
+}
+\end{lstlisting}
+
+Este programa es correcto para el caso donde ingresemos cualquier cosa que no sea 5. Se nos mostrará un mensaje apropiado, pero no es toda la historia. Si analizamos el caso donde ingresamos el número 5 nuevamente, obtendremos \textit{ambos} mensajes. Esto tampoco nos sirve. Para solucionar nuestro problema agregamos el \celse.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int a;
+
+	printf("Ingrese el numero 5\n");
+	scanf("%d", &a);
+	if (a == 5) {
+		printf("El numero es correcto\n");
+	} else {
+		printf("El numero no es correcto\n");
+	}
+
+	return 0;
+}
+\end{lstlisting}
+
+Este programa es correcto para cualquier entrada. Hace uso del concepto \celse. El \celse\ siempre deberá ir luego de un \cif, y su código sólo se ejecuta cuando la condición de su \cif\ anterior resulta falsa, no cuando es verdadera. Podemos pensarlo como que sólo uno de los bloques se ejecutará, y no ambos. El de arriba cuando la condición es verdadera, el de abajo cuando la condición es falsa.
+
+\bigskip
+
+Pero todavía podemos ir más allá con esta idea. Supongamos que queremos verificar otra condición, por ejemplo si \textit{a} es 7. La pregunta es dónde podríamos hacer esta comparación para que nuestro programa siga siendo correcto. Podríamos ubicarlo antes, o más adelante, como algo separado. Probemos más adelante.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int a;
+
+	printf("Ingrese el numero 5 o el numero 7\n");
+	scanf("%d", &a);
+	if (a == 5) {
+		printf("El numero es 5\n");
+	} else {
+		printf("El numero no es 5\n");
+	}
+
+	if (a == 7) {
+		printf("El numero es 7\n");
+	} else {
+		printf("El numero no es 7\n");
+	}
+
+	return 0;
+}
+\end{lstlisting}
+
+Si seguimos la ejecución del programa mentalmente, o simplemente lo probamos, veremos que esto no es lo que queremos. Si ingresásemos 5, veríamos que el número es 5, pero además que el número no es 7. La inversa ocurriría con el 7. Y si no ingresamos ninguno de los dos, sino otro, veríamos que no es ni 5 ni 7 en dos mensajes separados. En conclusión, este programa imprimirá dos mensajes sin importar la entrada. Hagamos un cambio.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int a;
+
+	printf("Ingrese el numero 5 o el numero 7\n");
+	scanf("%d", &a);
+	if (a == 5) {
+		printf("El numero es 5\n");
+	} else {
+		if (a == 7) {
+			printf("El numero es 7\n");
+		} else {
+			printf("El numero no es ni 5 ni 7\n");
+		}
+	}
+
+	return 0;
+}
+\end{lstlisting}
+
+Efectivamente, solo movimos nuestro segundo \cif\ \celse\ de afuera, hacia adentro del primer \celse, cambiando los mensajes. Este programa será correcto. Para 5 veremos un mensaje, y la comparación con el 7 ni siquiera se ejecutará. Para el 7 entramos en el primer \celse\ y hacemos un nuevo \cif\ que será verdadero, y por lo tanto mostraremos ese mensaje, y no el del segundo \celse, eso concluirá nuestro primer \celse\ y nada más ocurrirá en nuestro programa. Finalmente, para cualquier otro número será similar que con el 7, sólo que entraremos al segundo \celse\ en lugar del segundo \cif.
+
+\bigskip
+
+Rápidamente el código se puede volver difícil de leer si, por ejemplo, tuviéramos 5 condiciones, ya que cada nueva condición iría en el \celse\ de la anterior. Por suerte existe algo que podemos hacer para mitigar este efecto. El programa anterior es completamente equivalente al siguiente.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int a;
+
+	printf("Ingrese el numero 5 o el numero 7\n");
+	scanf("%d", &a);
+	if (a == 5) {
+		printf("El numero es 5\n");
+	} else if (a == 7) {
+		printf("El numero es 7\n");
+	} else {
+		printf("El numero no es ni 5 ni 7\n");
+	}
+
+	return 0;
+}
+\end{lstlisting}
+
+Solamente uno de todos los bloques se ejecutará, y si alguno se ejecuta, los que siguen ya no se verificarán. La secuencia de \celse\ \cif\ puede ser arbitrariamente grande, siempre y cuándo comienze con un \cif. No es necesario que termine con un \celse. Si lo hubiere, este bloque se ejecutará cuando todos los anteriores fallen. De esta forma tenemos la garantía de que alguno, y exactamente uno, de todos esos bloques se ejecutará.
+
+\section{Bucles}
+
+En simples términos, los bucles nos permitirán repetir un bloque de código tantas veces como sea necesario. Son similares a los \cif\ \celse, en el sentido de que contienen un bloque de código para ejecutar, y será ejectutado siempre que la condición sea verdadera. Ejemplificaremos con el primer concepto, el \cwhile.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int repeticiones;
+
+	printf("Ingrese la cantidad de repeticiones\n");
+	scanf("%d", &repeticiones);
+	while(repeticiones > 0) {
+		printf("Quedan %d repeticiones\n", repeticiones);
+		repeticiones = repeticiones - 1; // completamos una
+	}
+
+	return 0;
+}
+\end{lstlisting}
+
+El anterior programa imprimirá el mensaje en el interior del \cwhile\ tantas veces como le hayamos especificado. Luego de leer la entrada del usuario nos encontramos con el \cwhile. La condición se chequea primero, si es verdadera entramos al bucle. Al llegar al final saltamos al principio, chequeamos la condición nuevamente y decidimos si entrar al bucle una segunda vez. Este proceso se repetirá hasta que la condición sea falsa.
+
+\bigskip
+
+\textbf{Imporante}: que la condición nunca sea verdadera producirá un bucle infinito, y hará que el programa nunca termine.
+
+\bigskip
+
+Se pueden usar un par de palabras especiales para manejar los bucles. Para cortarlo prematuramente en cualquier punto usaríamos \lstinline{break} y para volver al principio y chequear la condición usaríamos \lstinline{continue}. Estas palabras especiales se mencionan a modo de comentario y no van a ser usadas ni discutidas nuevamente.
+
+\bigskip
+
+Otro ejemplo muy importante de los bucles, típicamente, es para validación de entrada. La implementación que presentamos es una donde fuera del bucle pedimos la entrada y la leemos. Luego introducimos un bucle que no termina hasta que la entrada sea la correcta. Si dicha entrada fue correcta la primera vez, entonces nunca ingresamos al bucle. En cambio, si la entrada es incorrecta, el mismo mensaje de error, seguido de una nueva entrada, se ejecutarán hasta que la entrada sea correcta. Este método funciona para cualquier validación.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int debeSerCero;
+
+	printf("Ingrese el 0\n");
+	scanf("%d", &debeSerCero);
+	while(debeSerCero != 0) {
+		printf("Intente nuevamente\n");
+		scanf("%d", &debeSerCero);
+	}
+
+	return 0;
+}
+\end{lstlisting}
+
+La razón para la cuál los bucles son más usados suele ser otra, que veremos en las siguientes secciones. Para eso debemos introducir un nuevo tipo de bucle, que descubriremos a partir de un problema. Si quisiéramos imprimir números desde 1 hasta N, donde N es un número arbitrario que el usuario nos proveerá en la entrada, podríamos escribir el siguiente programa.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int actual;
+	int maximo;
+
+	printf("Ingrese el numero maximo\n");
+	scanf("%d", &maximo);
+	actual = 1;
+	while(actual <= maximo) {
+		printf("%d\n", actual);
+		actual = actual + 1; // pasamos al siguiente
+	}
+
+	return 0;
+}
+\end{lstlisting}
+
+Siempre que la variable \textit{actual} no supere el número que le pedimos al usuario, el bucle no terminará. Esto provoca que se impriman todos los enteros desde 1 hasta \textit{maximo} inclusive. Notar que, en cierta forma, \textit{actual} además nos sirve para saber en qué ciclo (también llamado iteración) del \cwhile\ estamos. Ahora se presenta un programa completamente equivalente al anterior.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int actual;
+	int maximo;
+
+	printf("Ingrese el numero maximo\n");
+	scanf("%d", &maximo);
+	for(actual = 1; actual <= maximo; actual = actual + 1) {
+		printf("%d\n", actual);
+	}
+
+	return 0;
+}
+\end{lstlisting}
+
+\cfor\ es lo mismo que un \cwhile. Cuenta con la ventaja de poder ejecutar algo al principio y algo al final de cada iteración pero antes de la comparación. Su primer campo es el inicio, su segundo campo es la condición y su tercer campo es aquello que se repite siempre al final. Observar que, comparado al ejemplo anterior con \cwhile, solo movimos comandos de un lugar a otro. Esto no es coincidencia, son literalmente la misma cosa. Para demostrar esto, ya que técnicamente los campos del \cfor\ son opcionales, todo \lstinline{while(x)} se puede reemplazar con \lstinline{for( ; x ; )}.
+
+\bigskip
+
+\textbf{Importante}: recordar usar ';' y no ',' para separar los campos de los \cfor.
+
+\bigskip
+
+Para qué usaríamos \cfor\ y no \cwhile\ si son la misma cosa es difícil de contestar todavía. Todo quedará más claro al seguir avanzando. En lo que hemos visto hasta ahora no hay mucha razón para preferir uno por sobre otro. El aspecto más relevante de los \cfor\ es que dejan en evidencia la variable en juego que va a ser modificada a lo largo de las iteraciones, y cómo. En cambio en el \cwhile\ es más trabajo darse cuenta sólo por leer el código. En conclusión, usar \cfor\ es mejor para casos donde hay una variable en juego que será modificada de la misma forma cada iteración. Estos casos no son pocos, sino la vasta mayoría. Además el \cfor, a partir de una versión de C llamada C99, permite declarar esta dichosa variable directamente en el primer campo, y no existirá fuera de él.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int maximo;
+
+	printf("Ingrese el numero maximo\n");
+	scanf("%d", &maximo);
+	for(int actual = 1; actual <= maximo; actual = actual + 1) {
+		printf("%d\n", actual);
+	}
+	// actual ya no existe
+
+	return 0;
+}
+\end{lstlisting}
+
+\section{Arrays}
+
+Los arrays, también conocidos como arreglos, son declaraciones de múltiples variables del mismo tipo, de una sola vez. La forma de acceder a ellas no será por un nombre único, sino por el nombre del array, que sí será único, y un índice que comienza en 0. Para declarar un array hacemos lo mismo que con una variable común, pero agregamos corchetes al final con un número entre medio, la cantidad de variables.
+
+\begin{lstlisting}
+int array[5];
+array[0] = 1;
+array[1] = 0;
+array[2] = 2;
+array[3] = 5;
+array[4] = -1;
+\end{lstlisting}
+
+En este ejemplo estamos declarando 5 variables, sin inicializar, y luego les estamos asignando valores una por una usando el nombre del array al que pertenecen junto con su índice. Existe una forma de inicializar un array en la línea de su declaración. El siguiente código es equivalente al anterior.
+
+\begin{lstlisting}
+int array[5] = {1, 0, 2, 5, -1};
+\end{lstlisting}
+
+Pero esto no será necesario si planeamos llenar el array con, por ejemplo, valores de entrada. La utilidad de los arrays será mejor explorada en la sección que sigue sobre algoritmos, por ahora sólo veremos su uso.
+
+\bigskip
+
+\textbf{Imporante}: el número dentro de los corchetes no puede provenir de una variable. Típicamente usaremos un número arbitrariamente grande, como 100, para nuestros algoritmos. Los tamaños de los arrays no pueden ser modificados, teóricamente estos forman parte de su tipo.
+
+\bigskip
+
+Primero explicaremos por qué los arrays comienzan sus índices en 0 y no en 1\footnote{Existen muchos lenguajes donde los arrays empiezan donde uno quiera, o tienen mucho más poder que solamente ser variables agrupadas. C no es así porque es consciente de la memoria que usa. Los arrays representan memoria contigua y nada más.}. En la sección sobre variables vimos que estas ocupan un lugar en memoria, y luego vimos que esa ubicación puede ser requerida por funciones como \cscanf. Los arrays también ocupan memoria, tanta como variables tengan, y esa memoria es \textbf{contigua}. Pero el array en sí no es una de esas variables, sino todas aquellas que se accedan con corchetes. Resulta que el nombre del array, por sí solo, representa la ubicación en memoria de todo el array. Como el array contiene muchas variables, la ubicación del mismo no es cualquiera, sino la del primer elemento. \lstinline{array} es lo mismo que \lstinline{&array[0]}, que es la ubicación de \lstinline{array[0]}\footnote{Las ubicaciones de las que tanto hablamos son direcciones de memoria. Son números que se pueden sumar y restar. Algo más general sería decir que \lstinline{&array[i]} es lo mismo que \lstinline{array + i}.}.
+
+\bigskip
+
+Sabiendo esto, veremos dos ejemplos clave de uso de los arrays.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int numeros[100];
+	int cantidad;
+
+	printf("Ingrese la cantidad de numeros\n");
+	scanf("%d", &cantidad);
+	for(int i = 0; i < cantidad; i++) {
+		scanf("%d", &numeros[i]);
+	}
+
+	return 0;
+}
+\end{lstlisting}
+
+En el ejemplo anterior, ingresamos una cantidad arbitraria de números, esa cantidad es definida por el usuario previamente. Notar que cualquier cantidad mayor a 100 nos presentará un problema, pero nos faltan herramientas para lidiar con esos casos, así que no nos preocuparemos.
+
+\bigskip
+
+\textbf{Importante}: acceder a un array con índices negativos o superiores al máximo producirá un error. Esto ocurre seguido, muchas veces de formas imprevistas.
+
+\bigskip
+
+Dos cosas para mencionar. Primero, se acostumbra a usar el operador \lstinline{++} para sumar de a 1, es muy común este uso. Segundo, el nombre de la variable \textit{i} no es coincidencia, es de hecho algo común. Este tipo de variables que se utilizan para atravesar un array se les llama \textbf{iteradores}. Otro nombre común para usar es \textit{it}. Estas últimas son costumbres y no son reglas estrictas.
+
+\bigskip
+
+Notar que, contrariamente al anterior ejemplo donde utilizamos un bucle \cfor, aquí comenzamos en 0 y nuestro iterador siempre será menor a la cantidad máxima de números, en vez de menor o igual. Esto es importante, queremos utilizar 0 como nuestro primer índice y no 1, para no despercidiar memoria. Es difícil acostumbrarse pero todo se vuelve más natural de esta forma. Además, utilizamos \textit{cantidad} como nuestro índice límite que nunca usaremos, y no 100 que es la cantidad máxima que soporta el array. Este comportamiento es obvio, pues de otra forma pediríamos más números de los que el usuario especificó.
+
+\bigskip
+
+\textbf{Importante}: pensar el indexamiento de N números en un array como 0 ... N - 1 en lugar de 1 ... N.
+
+\bigskip
+
+El otro ejemplo que veremos es una aplicación importante de los arrays, cuando estos contienen caracteres, con el tipo \lstinline{char}. A estos se les llama \textbf{strings} o cadenas. La forma en que se trata con ellos es particular, ya que hay caracteres que no se pueden imprimir y que tienen significados especiales. Uno de estos caracteres es el \textbf{terminador}, y en C lo simbolizamos con \lstinline{'\0'}. Este se usa para simbolizar fin de cadena.
+
+\bigskip
+
+\textbf{Importante}: los caracteres, por sí solos, se escriben con comillas simples, las comillas dobles se reservan para los conjuntos de caracteres. Notar que estos últimos son en realidad strings, y ya los estuvimos usando.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	char caracteres[100];
+	char c;
+
+	printf("Escriba algo y presione 'enter'\n");
+	for(int i = 0; (c = getchar()) != '\n'; i++) {
+		caracteres[i] = c;
+	}
+
+	return 0;
+}
+\end{lstlisting}
+
+Lo más interesante de este ejemplo es la forma en que ingresamos caracteres. Existe una forma de hacerlo con \cscanf, pero resulta engorrosa y no la vemos. Aquí lo que estamos haciendo es que hacemos una asignación al mismo tiempo que hacemos un chequeo. \lstinline{getchar} es una función que lee un caracter de la consola. A ese caracter lo asignamos a la variable \textit{c} para usar luego, pero si ese caracter resulta ser una nueva linea significa que no queremos leer más nada. En nuestro ejemplo esto hace que el bucle termine. La asignación en C es una operación que se evalúa al valor asignado, eso nos permite usar este truco.
+
+\bigskip
+
+\textbf{Importante}: no olvidarse los paréntesis alrededor de la asignación.
+
+\bigskip
+
+Observemos algo importante, no estamos poniendo un terminador al final. Esto es de vital importancia, pues sino no sabríamos cuándo termina el string y terminaríamos accediendo a memoria prohibida al iterar. Como nunca pedimos una cantidad de caracteres, por este método tampoco podemos saber cuándo termina el string. Podríamos usar \textit{i}, pero esa variable deja de existir fuera del \cfor. Vamos a evitar esto último para corregir nuestro programa.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	char caracteres[100];
+	char c;
+
+	printf("Escriba algo y presione 'enter'\n");
+	int i;
+	for(i = 0; (c = getchar()) != '\n'; i++) {
+		caracteres[i] = c;
+	}
+	caracteres[i] = '\0';
+
+	return 0;
+}
+\end{lstlisting}
+
+En este nuevo programa, el iterador vive incluso después del \cfor, y tendrá el último valor que le fue asignado. Usamos este valor para ingresar a mano el terminador. Como ejercicio, razonar por qué hacer esto no pisa ningún caracter ya ingresado, y no deja huecos sin usar.
+
+\bigskip
+
+Para terminar, resta el problema de mostrar los contenidos de estos arrays. Queda como ejercicio imprimir cada uno de los números de un array de \lstinline{int}, utilizando un \cfor\ como se hizo en el ingreso. Por supuesto que para los strings se puede hacer lo mismo, solo que en lugar de iterar hasta llegar a la cantidad de números ingresados, iteramos hasta toparnos con \lstinline{'\0'}. Pero existe una mejor forma que C nos provee y es con \lstinline{printf("%s", caracteres)}. Notar que usamos la ubicación del string y no una de sus variables.
+
+\section{Algoritmos}
+
+Existen ciertos patrones de codigo que nos ayudan a resolver problemas comunes. A estos patrones los llamamos algoritmos. Algunos algoritmos que nos van a servir son:
+
+\begin{itemize}
+	\item buscar
+	\item elemento maximo/minimo
+	\item contar
+	\item acumular
+\end{itemize}
+
+Estos se llaman algoritmos de reducción. Se llaman asi porque toman un array de valores y producen un único valor como resultado. En ese sentido, reducen una lista a un solo valor. Aunque todos caen dentro del paragüas de los algoritmos de reducción, son suficientemente distintos entre sí como para merecer trato individual.
+
+Algunos algoritmos, cuya categoría difiere de la anterior, pero que nos serán de interés son:
+
+\begin{itemize}
+	\item transformar
+	\item filtrar
+	\item invertir
+	\item intercambiar
+\end{itemize}
+
+\subsection{Buscar}
+
+Este algoritmo nos permite saber si un valor se encuentra en un array y, de ser así, su posición en el mismo.
+
+\bigskip
+
+A grandes rasgos, utilizamos un iterador para comparar cada elemento del array con el valor que nos interesa y, al encontrarlo, guardamos su posición en una variable nueva cuya labor es contener esta posición. A este tipo de variables que contienen el resultado de una búsqueda se las llama \textbf{sentinelas}. Si el elemento no se encuentra en el array, nunca guardamos una posición en la variable auxiliar. Entonces, la variable mantiene su valor anterior. Podemos aprovechar esto eligiendo un valor que indique que no se encontró el elemento. Una buen opción para este indicador es -1, ya que nunca será una posición válida en un array.
+
+\begin{lstlisting}
+int lista[10] = {5, 4, 7, 3, 4, 2, 5, 3, 10, 8};
+
+int valor = 4;
+
+int posicion = -1;
+for (int i = 0; i < 10; i++) {
+	if (valor == lista[i]) {
+		posicion = i;
+	}
+}
+
+if (posicion == -1) {
+	printf("el valor no se encuentra en el array\n");
+} else {
+	printf("el valor aparece en la posicion %d\n", posicion);
+}
+\end{lstlisting}
+
+\subsection{Elemento máximo/mínimo}
+
+Este algoritmo nos permite encontrar el mayor o menor elemento de un array. Vemos el caso del mayor elemento, con el de menor siendo análogo a este.
+
+\bigskip
+
+A grandes rasgos, recorremos el array con un iterador, comparando cada elemento con un valor de referencia. Si el elemento supera el valor de referencia, reemplazamos este último con el elemento. A la variable que mantiene el valor de referencia se la suele llamar \textbf{maximizador}. Una buena opción para el valor de referencia inicial es el primer elemento del array, queda como ejercicio razonar por qué.
+
+\begin{lstlisting}
+double lista[10] = { 5.0, 4.0, 7.0, 3.0, 4.0, 2.0, 5.0, 3.0, 10.0, 8.0 };
+
+double valor = lista[0];
+for (int i = 0; i < 10; i++) {
+	if (valor < lista[i]) {
+		valor = lista[i];
+	}
+}
+\end{lstlisting}
+
+\textbf{Ejercicios}: modificar el algoritmo para tambien encontrar la posición del elemento máximo, modificarlo para encontrar el elemento mínimo.
+
+\subsection{Contar}
+
+Este algoritmo nos permite calcular la cantidad de veces que aparece un valor en un array.
+
+\bigskip
+
+A grandes rasgos, usamos un iterador para recorrer el array, verificando por cada elemento, si verifica una condición. Si es así, incrementamos una variable que solemos llamar \textbf{contador}. Inicialmente, asignamos 0 al contador, razonar por qué esto debe ser así. Mostramos en el ejemplo una condición muy común, que es verificar la igualdad con un valor particular.
+
+\begin{lstlisting}
+char lista[8] = { 'c', 'a', 'g', 'c', 'a', 'g', 't', 'a' };
+
+char valor = 'c';
+
+int apariciones = 0;
+for (int i = 0; i < 8; i++) {
+	if (valor == lista[i]) {
+		apariciones += 1;
+	}
+}
+\end{lstlisting}
+
+\textbf{Ejercicios}: modificar el algoritmo para contar la cantidad de elementos que son iguales a \lstinline{'c'} o a \lstinline{'a'}.
+
+\subsection{Acumular}
+
+Este algoritmo nos permite encontrar la combinación de los elementos de un array, mediante alguna operación. Muy comúnmente es la suma, pero muchas otras opciones, como el producto.
+
+\bigskip
+
+A grandes rasgos, iteramos por el array, y guardamos en una variable, comúnmente llamada \textbf{acumulador}, el resultado de la operación entre el valor anterior de la variable y el elemento del array. El valor inicial de esta variable dependerá de la operación de acumulación que estemos usando, y este valor coincidirá con la \textit{identidad} de la operación. Para la suma será el 0, para el producto será el 1, etc.
+
+\begin{lstlisting}
+float lista[5] = { 1.1, 0.9, 0.5, 1.3, 0.7 };
+
+float producto = 1.0;
+for (int i = 0; i < 5; i++) {
+	producto = producto * lista[i];
+}
+\end{lstlisting}
+
+\subsection{Transformar}
+
+Este algoritmo nos permite modificar cada elemento de un array, para obtener un nuevo array, con las versiones transformadas de cada elemento.
+
+\bigskip
+
+En su implementación, iteramos por cada elemento del array, le aplicamos la transformación, y guardamos el resultado de esta en el array de resultados. Es importante que el tamaño de los arrays coincidan, o al menos que el array de destino sea más grande. En este ejemplo nuestra transformación es la del recíproco, pero existen infinidad de transformaciones posibles.
+
+\begin{lstlisting}
+int lista[5] = { 2, 3, 1, 4, 5 };
+
+float resultado[5];
+for (int i = 0; i < 5; i++) {
+	resultado[i] = 1.0 / lista[i];
+}
+\end{lstlisting}
+
+\textbf{Ejercicio}: si nuestras transformaciones no producen valores de tipos distintos, podríamos usar nuestro array de origen como array de destino. Sabiendo que la división entre enteros produce otro entero, modificar el ejercicio anterior para que los resultados se guarden en \textit{lista}.
+
+\subsection{Filtrar}
+
+Este algoritmo nos permite obtener en un array separado, los elementos de un array que cumplen alguna condición. En algunos casos, como con los strings, podríamos guardar los resultados en el mismo array, pero resulta muy complicado de visualizar y generalmente no se requerirá.
+
+\bigskip
+
+A grandes rasgos, iteramos por el array, verificando nuestra condición en cada elemento. Si este la cumple, lo guardamos en una posición vacia del array de resultados. Notar que requerimos otro iterador para poder guardar cosas en el array destino, y a este lo llamamos \textit{j}, porque es la letra que le sigue a \textit{i}. Además, usamos el operador \lstinline{%}, que hace el módulo.
+
+\begin{lstlisting}
+int lista[5] = { 2, 5, 3, 8, 9 };
+
+int resultado[5];
+int j = 0;
+for (int i = 0; i < 5; i++) {
+	if (lista[i] % 2 == 0) {
+		resultado[j] = lista[i];
+		j += 1;
+	}
+}
+\end{lstlisting}
+
+\textbf{Ejercicio}: pensar con qué algoritmo de reducción guarda similitud el anterior.
+
+\subsection{Intercambiar}
+
+Este procedimiento intercambia los valores de dos variables, usando una variable auxiliar para no perder uno de los valores, al pisarlo con el otro. Es un pequeño algoritmo muy utilizado en otros más grandes, como el siguiente que vamos a ver.
+
+\begin{lstlisting}
+int aux = a;
+a = b;
+b = aux;
+\end{lstlisting}
+
+\textbf{Ejercicio}: pensar qué ocurriría si no pudiésemos usar una variable auxiliar en este procedimiento.
+
+\subsection{Invertir}
+
+Este algoritmo nos permita dar vuelta un array. Intercambia el primer elemento con el último, el segundo con el penúltimo, etc.
+
+\bigskip
+
+A grandes rasgos, ponemos un iterador al principio del array, y uno al final, e intercambiamos los elementos que estos indican usando el algoritmo anterior. Luego acercamos los iteradores. Se repite este proceso hasta que los iteradores se cruzan. Hay muchas formas de escribir este algoritmo, existe una que no utiliza un segundo iterador y se deja como ejercicio.
+
+\begin{lstlisting}
+char lista[6] = { 'a', 'b', 'c', 'd', 'e', 'f' };
+
+int j = 5; // indice del ultimo elemento
+int i = 0; // indice del primer elemento
+while (i < j) {
+	int aux = lista[i];
+	lista[i] = lista[j];
+	lista[j] = aux;
+	i += 1;
+	j -= 1;
+}
+
+// lista es { 'f', 'e', 'd', 'c', 'b', 'a' }
+\end{lstlisting}
+
+\section{Funciones}
+
+Una función en C no es exáctamente lo mismo que una función en matemática. En concepto son similares, pero en C son capaces de más cosas. Una función no es más que un bloque de código al que le ponemos nombre, que puede tomar 0 o más parámetros, y puede regresarnos exáctamente un valor, o ninguno. Al ponerle nombre a un bloque de código, la idea es que lo podamos usar en cualquier parte, y hacer de cuenta que está donde llamamos a la función.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+	int a, b;
+	printf("Escriba dos numeros\n");
+	scanf("%d %d", &a, &b);
+	printf("Su suma es %d", a + b);
+
+	return 0;
+}
+\end{lstlisting}
+
+Construimos este ejemplo, y lo pasamos a función. Pare definir una función, requerimos su tipo de retorno, su nombre, paréntesis, sus argumentos y las llaves que encierran el código que se ejecutará siempre que llamemos a la función, pero con algunas restricciones.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+int suma(int a, int b) {
+	return a + b;
+}
+
+int main() {
+	int a, b;
+	printf("Escriba dos numeros\n");
+	scanf("%d %d", &a, &b);
+	printf("Su suma es %d", suma(a, b));
+
+	return 0;
+}
+\end{lstlisting}
+
+Notemos que los parámetros llevan tipos y nombres. Son, en escencia, simplemente variables que se inicializan con aquellos valores que le damos a la función cuando la llamamos, en orden. No es necesario que lleven el mismo nombre que variables de afuera, esto es una coincidencia del ejemplo. Naturalmente, los parámetros se destruyen cuando termina la función, y desde dentro no tenemos acceso a nada que exista afuera.
+
+\bigskip
+
+Observemos también que, como se dijo antes, \cmain\ también es una función, al igual que \cprintf\ y \cscanf. Por último iremos un poco más lejos, metiendo todo el código dentro de una función.
+
+\begin{lstlisting}
+#include <stdio.h>
+
+void pedir_y_sumar() {
+	int a, b;
+	printf("Escriba dos numeros\n");
+	scanf("%d %d", &a, &b);
+	printf("Su suma es %d", suma(a, b));
+}
+
+int main() {
+	pedir_y_sumar();
+	return 0;
+}
+\end{lstlisting}
+
+Construimos una función que no toma argumentos y que no retorna nada, simbolizado con el tipo \lstinline{void}. A esta función simplemente la llamamos en main sin argumentos y ejecutará todo lo que hicimos antes. Las funciones que no retornan nada no necesitan un \lstinline{return}, pero se puede colocar de todos modos, sin ningún valor acompañándolo.
+
+\bigskip
+
+El aspecto más importante de las funciones es que los valores de los parámetros se \textbf{copian} y las variables de los parámetros son diferentes a lo que sea que les pasemos como parámetro.
+
+\begin{lstlisting}
+// sin #include porque no lo necesitamos
+
+void sucesor(int a_funcion) {
+	a_funcion += 1;
+}
+
+int main() {
+	int a_main = 1;
+	sucesor(a_main);
+	// a_main sigue valiendo 1
+	
+	// recordar que sucesor es void entonces
+	// a_main = sucesor(a_main);
+	// es incorrecto
+	return 0;
+}
+\end{lstlisting}
+
+Existe una única excepción, que en realidad no lo es. Es posible entregarle a una función un array entero, pero este no se copiará. En realidad lo que le estamos dando a la función no es el array, sino su ubicación. Esto le permite a la función modificar el array original, y no una copia.
+
+\begin{lstlisting}
+// sin #include porque no lo necesitamos
+
+void sucesor_al_primero(int array[]) {
+	array[0] += 1;
+}
+
+int main() {
+	int array[5] = { 0, 2, 3, 4, 5 };
+	sucesor(array);
+	// array contiene { 1, 2, 3, 4, 5 }
+	
+	return 0;
+}
+\end{lstlisting}
+
+Notar que no pusimos un número en los corchetes del array de la función. Esto no es un accidente, así queda claro que aceptamos arrays de cualquier tamaño. Incluso si pusiéramos un tamaño, cualquiera sea este, podríamos pasar un array de cualquier otro tamaño.
+
+% TODO: chequear esto, mi gcc está haciendo cosas raras y no se rompe con nada que le haga
+
+\bigskip
+
+Ocurre lo mismo a la hora de retornar arrays. No podemos retornar un array, solamente su ubicación. Y si este array fue creado dentro de la función, dejaría de existir cuando la función termina, lo que luego resultaría en un error al internar usarlo fuera de dicha función. Para evitar este problema, nuestra estrategia es simplemente crear el array fuera de la función y pasarle su ubicación como parámetro. Veremos sus efectos desde afuera.
+
+\begin{lstlisting}
+// sin #include porque no lo necesitamos
+
+void llenar_array(int array[]) {
+	array[0] = 1;
+	array[1] = 2;
+	array[2] = 3;
+	array[3] = 4;
+	array[4] = 5;
+}
+
+int main() {
+	int array[5];
+	llenar_array(array);
+
+	return 0;
+}
+\end{lstlisting}
+
+Como comentario final, es muy común escribir los algoritmos vistos en la sección anterior dentro de funciones, no sólo porque pueden ser requeridos múltiples veces, sino también para poder leer mejor el código. Es importante que se entienda lo que se escribe. Cuando tenemos un pedazo de código que ejecuta alguna idea, el acto de volverlo a una función, como vimos, le pone nombre. Asociamos esa idea con ese código.
+
+\bigskip
+
+\textbf{Ejercicios}: escribir funciones para los algoritmos de la sección anterior.
+
+\end{document}
